@@ -1,0 +1,95 @@
+package Autocompletion;
+import java.util.*;
+class Trie{
+	Trie ch[];
+	int wc;
+	boolean ended;
+	Trie(){
+		ch=new Trie[26];
+		wc=0;
+		ended=false;
+		
+	}
+}
+public class Main {
+	static void insert(Trie root,String s) {
+		Trie t=root;
+		for(char ci:s.toCharArray()) {
+			int in=ci-'a';
+			if(t.ch[in]==null)
+			  t.ch[in]=new Trie();
+			t=t.ch[in];
+			t.wc++;
+		}
+		t.ended=true;
+	}
+	static void help(Trie root,List<String> li,String t) {
+		if(root.ended) {
+			li.add(t);
+		}
+		for(int i=0;i<26;i++) {
+			if(root.ch[i]!=null) {
+				char ch=(char)(i+'a');
+				help(root.ch[i],li,t+ch);
+			}
+		}
+		return;
+	}
+	static boolean doesExists(Trie root,String s) {
+		Trie t=root;
+		for(char ci:s.toCharArray()) {
+			int in=ci-'a';
+			if(t.ch[in]==null)
+			  return false;
+			t=t.ch[in];
+		}
+		return t.ended;
+	}
+	static void getAllWordsWithPrefix(Trie root,List<String> li,String ps) {
+		Trie t=root;
+		for(char ci:ps.toCharArray()) {
+			int in=ci-'a';
+			if(t.ch[in]==null)
+			  return;
+			t=t.ch[in];
+		}
+		help(t,li,ps);
+	}
+	
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		Scanner sc=new Scanner(System.in);
+		int n=sc.nextInt();
+		Trie root=new Trie();
+		while(n--!=0) {
+			int op=sc.nextInt();
+			if(op==1) {
+				String w=sc.next();
+				insert(root,w);
+			}
+			else if(op==2) {
+				String w=sc.next();
+				System.out.println(doesExists(root,w));
+			}
+			else if(op==3) {
+				String ps=sc.next();
+				List<String> li=new ArrayList<>();
+				getAllWordsWithPrefix(root,li,ps);
+				
+				for(int i=0;i<li.size();i++) {
+						System.out.println(li.get(i));
+			}
+		}
+			else if(op==4) {
+			 String ps="";
+				List<String> li=new ArrayList<>();
+				help(root,li,ps);
+				
+				for(int i=0;i<li.size();i++) {
+						System.out.println(li.get(i));
+			}
+			}
+
+	}
+}
+}
